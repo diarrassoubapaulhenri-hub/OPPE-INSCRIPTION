@@ -1,3 +1,31 @@
+// Réparation d'urgence des fonctions de personnel
+window.editPersonnel = function(id) {
+    console.log("editPersonnel appelé avec id:", id);
+    const personnel = personnels.find(p => p.id === id);
+    if (personnel) {
+        alert("Modification du personnel: " + personnel.nom);
+        // Ouvrir le modal manuellement
+        document.getElementById('editPersonnelModal').style.display = 'block';
+        document.getElementById('editPersonnelNom').value = personnel.nom;
+        document.getElementById('editPersonnelCode').value = personnel.code;
+        document.getElementById('editPersonnelPoste').value = personnel.poste;
+    } else {
+        alert("Personnel non trouvé!");
+    }
+};
+
+window.confirmDeletePersonnel = function(id) {
+    console.log("confirmDeletePersonnel appelé avec id:", id);
+    if (confirm("Voulez-vous vraiment supprimer ce membre?")) {
+        const index = personnels.findIndex(p => p.id === id);
+        if (index !== -1) {
+            personnels.splice(index, 1);
+            localStorage.setItem('oppe_personnels_2026', JSON.stringify(personnels));
+            loadPersonnels();
+            alert("Membre supprimé!");
+        }
+    }
+};
 // Données de stockage
 let inscriptions = JSON.parse(localStorage.getItem('oppe_inscriptions_2026')) || [];
 let personnels = JSON.parse(localStorage.getItem('oppe_personnels_2026')) || [
@@ -463,3 +491,4 @@ function filterPersonnel() {
 
 // Reste du code inchangé...
 // [Toutes les autres fonctions restent identiques]
+
