@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès OPPE 2026</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .login-logo {
+            font-size: 4em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+        
+        .login-title {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .password-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .password-container input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        
+        .password-container input:focus {
+            border-color: #1e3c72;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        
+        .login-btn {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .attempts-warning {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .security-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .security-info h4 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .forgot-password {
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .forgot-password a {
+            color: #1e3c72;
+            text-decoration: none;
+        }
+        
+        .lock-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <h1 class="login-title">Accès Administrateur</h1>
+        <p class="login-subtitle">Système d'inscription OPPE 2026</p>
+        
+        <div class="password-container">
+            <i class="fas fa-key lock-icon"></i>
+            <input type="password" id="password" placeholder="Entrez le mot de passe d'accès" autocomplete="off">
+            <button type="button" class="toggle-password" id="togglePassword">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+        
+        <div class="attempts-warning" id="attemptsWarning">
+            <i class="fas fa-exclamation-triangle"></i> Tentatives restantes: <span id="attemptsCount">3</span>
+        </div>
+        
+        <button id="loginBtn" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Accéder au système
+        </button>
+        
+        <div class="forgot-password">
+            <a href="#" id="forgotLink"><i class="fas fa-question-circle"></i> Mot de passe oublié ?</a>
+        </div>
+        
+        <div class="security-info">
+            <h4><i class="fas fa-shield-alt"></i> Sécurité</h4>
+            <p>Cette page protège l'accès aux données sensibles du système d'inscription OPPE 2026.</p>
+            <p>Contactez l'administrateur si vous n'avez pas les identifiants.</p>
+        </div>
+    </div>
+
+    <script>
+        // Mot de passe par défaut (à changer en production)
+        const CORRECT_PASSWORD = "OPPE2026";
+        const MAX_ATTEMPTS = 3;
+        
+        let attempts = parseInt(localStorage.getItem('loginAttempts')) || 0;
+        let isLocked = localStorage.getItem('isLocked') === 'true';
+        let lockUntil = parseInt(localStorage.getItem('lockUntil')) || 0;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const toggleBtn = document.getElementById('togglePassword');
+            const attemptsWarning = document.getElementById('attemptsWarning');
+            const attemptsCount = document.getElementById('attemptsCount');
+            const forgotLink = document.getElementById('forgotLink');
+            
+            // Vérifier si le système est verrouillé
+            checkLockStatus();
+            
+            // Afficher les tentatives restantes
+            attemptsCount.textContent = MAX_ATTEMPTS - attempts;
+            if (attempts > 0) {
+                attemptsWarning.style.display = 'block';
+            }
+            
+            // Basculer visibilité mot de passe
+            toggleBtn.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Tentative de connexion
+            loginBtn.addEventListener('click', function() {
+                const enteredPassword = passwordInput.value.trim();
+                
+                if (!enteredPassword) {
+                    alert('Veuillez entrer le mot de passe');
+                    return;
+                }
+                
+                if (enteredPassword === CORRECT_PASSWORD) {
+                    // Connexion réussie
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('loginAttempts', '0');
+                    window.location.href = 'index.html';
+                } else {
+                    // Mot de passe incorrect
+                    attempts++;
+                    localStorage.setItem('loginAttempts', attempts.toString());
+                    
+                    if (attempts >= MAX_ATTEMPTS) {
+                        // Verrouiller l'accès
+                        lockAccount();
+                        attemptsWarning.innerHTML = '<i class="fas fa-ban"></i> Accès verrouillé pendant 15 minutes';
+                        loginBtn.disabled = true;
+                        passwordInput.disabled = true;
+                    } else {
+                        attemptsCount.textContent = MAX_ATTEMPTS - attempts;
+                        attemptsWarning.style.display = 'block';
+                        alert(`Mot de passe incorrect. Tentatives restantes: ${MAX_ATTEMPTS - attempts}`);
+                    }
+                }
+            });
+            
+            // Entrée pour valider
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+            
+            // Mot de passe oublié
+            forgotLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const adminEmail = "admin@oppe.org";
+                const adminPhone = "+229 XX XX XX XX";
+                alert(`Contactez l'administrateur:\n📧 ${adminEmail}\n📞 ${adminPhone}`);
+            });
+        });
+        
+        function checkLockStatus() {
+            const now = Date.now();
+            
+            if (isLocked && now < lockUntil) {
+                // Calculer le temps restant
+                const minutesLeft = Math.ceil((lockUntil - now) / (1000 * 60));
+                alert(`Accès verrouillé. Réessayez dans ${minutesLeft} minute(s).`);
+                window.location.href = 'locked.html';
+                return true;
+            } else if (isLocked && now >= lockUntil) {
+                // Déverrouiller
+                localStorage.removeItem('isLocked');
+                localStorage.removeItem('lockUntil');
+                localStorage.setItem('loginAttempts', '0');
+                isLocked = false;
+                attempts = 0;
+            }
+            
+            return false;
+        }
+        
+        function lockAccount() {
+            const lockTime = 15 * 60 * 1000; // 15 minutes en millisecondes
+            const lockUntilTime = Date.now() + lockTime;
+            
+            localStorage.setItem('isLocked', 'true');
+            localStorage.setItem('lockUntil', lockUntilTime.toString());
+            
+            // Rediriger vers page de verrouillage
+            window.location.href = 'locked.html';
+        }
+    </script>
+</body>
+</html>

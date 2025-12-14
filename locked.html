@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès Verrouillé</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .lock-container {
+            background: rgba(255,255,255,0.1);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .lock-icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: shake 0.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shake {
+            from { transform: rotate(-5deg); }
+            to { transform: rotate(5deg); }
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .countdown {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            min-width: 200px;
+        }
+        
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .contact-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .contact-info h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .retry-btn {
+            background: white;
+            color: #e74c3c;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .retry-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .lock-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .countdown {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lock-container">
+        <div class="lock-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <h1>Accès Temporairement Verrouillé</h1>
+        
+        <div class="message">
+            <p>Vous avez dépassé le nombre maximum de tentatives de connexion.</p>
+            <p>Veuillez patienter quelques minutes avant de réessayer.</p>
+        </div>
+        
+        <div class="countdown" id="countdown">
+            15:00
+        </div>
+        
+        <button class="retry-btn" id="retryBtn" disabled>
+            <i class="fas fa-redo"></i> Réessayer
+        </button>
+        
+        <div class="contact-info">
+            <h3><i class="fas fa-headset"></i> Support technique</h3>
+            <p>Si vous avez oublié le mot de passe ou rencontrez un problème :</p>
+            <p><i class="fas fa-envelope"></i> Email : admin@oppe.org</p>
+            <p><i class="fas fa-phone"></i> Téléphone : +229 XX XX XX XX</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countdownEl = document.getElementById('countdown');
+            const retryBtn = document.getElementById('retryBtn');
+            const lockUntil = parseInt(localStorage.getItem('lockUntil')) || 0;
+            
+            function updateCountdown() {
+                const now = Date.now();
+                const timeLeft = lockUntil - now;
+                
+                if (timeLeft <= 0) {
+                    // Déverrouiller
+                    localStorage.removeItem('isLocked');
+                    localStorage.removeItem('lockUntil');
+                    localStorage.setItem('loginAttempts', '0');
+                    
+                    countdownEl.textContent = "00:00";
+                    retryBtn.textContent = "Retour à la connexion";
+                    retryBtn.disabled = false;
+                    
+                    retryBtn.addEventListener('click', function() {
+                        window.location.href = 'login.html';
+                    });
+                    
+                    return;
+                }
+                
+                // Calculer minutes et secondes
+                const minutes = Math.floor(timeLeft / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                // Afficher avec format MM:SS
+                countdownEl.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Mettre à jour toutes les secondes
+                setTimeout(updateCountdown, 1000);
+            }
+            
+            updateCountdown();
+        });
+    </script>
+</body>
+</html>
