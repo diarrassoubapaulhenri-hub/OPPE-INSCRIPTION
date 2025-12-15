@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscriptions - OPPE 2026</title>
+    
+    <!-- Meta tags pour éviter les problèmes de tracking -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+    
+    <!-- Styles et polices -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Librairies externes -->
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Vérification d'authentification -->
@@ -55,7 +64,7 @@
             </div>
         </header>
 
-        <!-- Navigation entre sections -->
+        <!-- Navigation -->
         <nav class="nav-tabs">
             <button class="tab-btn active" data-tab="inscription">
                 <i class="fas fa-user-plus"></i> Nouvelle Inscription
@@ -77,7 +86,7 @@
             </button>
         </nav>
 
-        <!-- Section Nouvelle Inscription -->
+        <!-- Nouvelle Inscription -->
         <section id="inscription" class="tab-content active">
             <div class="section-header">
                 <h2><i class="fas fa-user-plus"></i> Formulaire d'Inscription OPPE 2026</h2>
@@ -141,9 +150,11 @@
                     </div>
                 </div>
                 
-                <!-- Section Personne qui inscrit -->
+                <!-- Personne qui inscrit -->
                 <div class="inscripteur-section">
                     <h3><i class="fas fa-user-tie"></i> Personne qui inscrit l'enfant *</h3>
+                    <p class="instruction">Cliquez sur un nom dans la liste pour le sélectionner</p>
+                    
                     <div class="inscripteur-options">
                         <div class="inscripteur-search">
                             <input type="text" id="searchInscripteur" placeholder="Rechercher un membre du personnel...">
@@ -153,7 +164,7 @@
                         </div>
                         
                         <div class="inscripteur-list" id="inscripteurList">
-                            <!-- La liste des inscripteurs sera générée dynamiquement -->
+                            <!-- Liste générée dynamiquement -->
                         </div>
                         
                         <div class="inscripteur-custom">
@@ -184,7 +195,7 @@
                     </div>
                 </div>
                 
-                <!-- Section Paiement en Francs CFA -->
+                <!-- Contribution Financière -->
                 <div class="payment-section">
                     <h3><i class="fas fa-money-bill-wave"></i> Contribution Financière (F CFA)</h3>
                     <div class="payment-options">
@@ -246,7 +257,7 @@
             </form>
         </section>
 
-        <!-- Section Liste des Inscrits -->
+        <!-- Liste des Inscrits -->
         <section id="liste" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-users"></i> Liste des Enfants Inscrits OPPE 2026</h2>
@@ -279,7 +290,7 @@
                         </tr>
                     </thead>
                     <tbody id="listeBody">
-                        <!-- Les inscriptions seront affichées ici -->
+                        <!-- Inscriptions générées dynamiquement -->
                     </tbody>
                 </table>
             </div>
@@ -304,7 +315,7 @@
             </div>
         </section>
 
-        <!-- Section Modification/Validation -->
+        <!-- Modification/Validation -->
         <section id="modification" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-user-edit"></i> Gestion des Inscriptions OPPE</h2>
@@ -390,7 +401,7 @@
                             <textarea id="editCommentaires" name="editCommentaires" rows="2"></textarea>
                         </div>
                         
-                        <!-- Section T-shirt -->
+                        <!-- T-shirt -->
                         <div class="tshirt-section">
                             <h4><i class="fas fa-tshirt"></i> Distribution du T-shirt</h4>
                             <div class="tshirt-status">
@@ -432,7 +443,7 @@
             </div>
         </section>
 
-        <!-- Section Statistiques -->
+        <!-- Statistiques -->
         <section id="statistiques" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-chart-pie"></i> Statistiques OPPE 2026</h2>
@@ -474,7 +485,7 @@
             </div>
         </section>
 
-        <!-- Section Gestion des Personnels -->
+        <!-- Personnels -->
         <section id="inscripteurs" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-user-tie"></i> Gestion des Membres du Personnel</h2>
@@ -546,7 +557,7 @@
                                 </tr>
                             </thead>
                             <tbody id="personnelListBody">
-                                <!-- La liste des personnels sera affichée ici -->
+                                <!-- Liste générée dynamiquement -->
                             </tbody>
                         </table>
                     </div>
@@ -573,7 +584,7 @@
             </div>
         </section>
 
-        <!-- Section Export Base de Données -->
+        <!-- Base de données -->
         <section id="export" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-database"></i> Gestion de la Base de Données</h2>
@@ -583,10 +594,10 @@
             <div class="database-section">
                 <div class="database-card">
                     <h3><i class="fas fa-file-excel"></i> Export Excel</h3>
-                    <p>Exportez toutes les inscriptions dans un fichier Excel compatible avec Microsoft Excel, Google Sheets et LibreOffice.</p>
+                    <p>Exportez toutes les inscriptions dans un fichier Excel.</p>
                     <div class="export-options">
                         <button id="exportExcelBtn" class="btn btn-excel">
-                            <i class="fas fa-file-excel"></i> Exporter en Excel (.xlsx)
+                            <i class="fas fa-file-excel"></i> Exporter en Excel
                         </button>
                         <button id="exportCSVBtn" class="btn btn-secondary">
                             <i class="fas fa-file-csv"></i> Exporter en CSV
@@ -596,7 +607,7 @@
                 
                 <div class="database-card">
                     <h3><i class="fas fa-save"></i> Sauvegarde des Données</h3>
-                    <p>Sauvegardez manuellement les données. Les données sont automatiquement sauvegardées dans votre navigateur.</p>
+                    <p>Sauvegardez manuellement les données.</p>
                     <div class="export-options">
                         <button id="backupBtn" class="btn btn-primary">
                             <i class="fas fa-download"></i> Télécharger sauvegarde
@@ -610,7 +621,7 @@
                 
                 <div class="database-card">
                     <h3><i class="fas fa-chart-line"></i> Rapports Complets</h3>
-                    <p>Générez des rapports détaillés avec analyse statistique et synthèse des inscriptions.</p>
+                    <p>Générez des rapports détaillés avec analyse statistique.</p>
                     <div class="export-options">
                         <button id="reportBtn" class="btn btn-primary">
                             <i class="fas fa-chart-pie"></i> Rapport complet
@@ -654,6 +665,7 @@
             </div>
         </section>
 
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-section">
@@ -677,7 +689,9 @@
         </footer>
     </div>
 
-    <!-- Modal de confirmation -->
+    <!-- Modals -->
+
+    <!-- Modal confirmation -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -702,7 +716,7 @@
         </div>
     </div>
 
-    <!-- Modal changement mot de passe -->
+    <!-- Modal mot de passe -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -734,69 +748,63 @@
         </div>
     </div>
 
-    <!-- Modal éditer personnel -->
-    <div id="editPersonnelModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-user-edit"></i> Modifier le membre du personnel</h3>
-                <span class="close-edit-personnel">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="formEditPersonnel">
-                    <input type="hidden" id="editPersonnelId">
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelNom">Nom complet</label>
-                        <input type="text" id="editPersonnelNom" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelCode">Code d'identification</label>
-                        <input type="text" id="editPersonnelCode" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelPoste">Poste/Fonction</label>
-                        <input type="text" id="editPersonnelPoste" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelTelephone">Téléphone</label>
-                        <input type="tel" id="editPersonnelTelephone" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelStatut">Statut</label>
-                        <select id="editPersonnelStatut" class="form-control">
-                            <option value="actif">Actif</option>
-                            <option value="inactif">Inactif</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editPersonnelCommentaires">Commentaires</label>
-                        <textarea id="editPersonnelCommentaires" class="form-control" rows="2"></textarea>
-                    </div>
-                    
-                    <div class="modal-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Enregistrer
-                        </button>
-                        <button type="button" id="deletePersonnelBtn" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Supprimer
-                        </button>
-                        <button type="button" id="cancelEditPersonnel" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Annuler
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <!-- Modal éditer personnel - VERSION SIMPLIFIÉE -->
+    <div id="editPersonnelModal" class="modal-personnel" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
+        <div style="background: white; margin: 50px auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 10px; position: relative;">
+            <button class="close-modal-btn" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            
+            <h2 style="color: #1e3c72; margin-bottom: 20px;"><i class="fas fa-user-edit"></i> Modifier le membre</h2>
+            
+            <form id="formEditPersonnel">
+                <input type="hidden" id="editPersonnelId">
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Nom complet *</label>
+                    <input type="text" id="editPersonnelNom" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Code *</label>
+                    <input type="text" id="editPersonnelCode" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Poste *</label>
+                    <input type="text" id="editPersonnelPoste" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Téléphone</label>
+                    <input type="tel" id="editPersonnelTelephone" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Statut</label>
+                    <select id="editPersonnelStatut" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option value="actif">Actif</option>
+                        <option value="inactif">Inactif</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="submit" style="flex: 1; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-save"></i> Confirmer
+                    </button>
+                    <button type="button" id="cancelEditPersonnelBtn" style="flex: 1; padding: 12px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button type="button" id="deletePersonnelModalBtn" style="width: 100%; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-trash"></i> Supprimer ce membre
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
