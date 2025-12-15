@@ -484,20 +484,21 @@ function loadPersonnels() {
     if (personnelsActifs.length === 0) {
         inscripteurList.innerHTML = '<p class="no-personnel">Aucun membre du personnel disponible</p>';
     } else {
-        personnelsActifs.forEach(personnel => {
-            // Pour la liste de sélection
-            const item = document.createElement('div');
-            item.className = 'inscripteur-item';
-            item.innerHTML = `
-                <h4>${personnel.nom}</h4>
-                <p>${personnel.poste} - ${personnel.code}</p>
-            `;
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.inscripteur-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                document.getElementById('inscripteurId').value = `${personnel.code} - ${personnel.nom}`;
-                document.getElementById('inscripteurPoste').value = personnel.poste;
-            });
+        personnelsActifs.forEach(item.addEventListener('click', function() {
+    document.querySelectorAll('.inscripteur-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+    
+    // Format: "CODE - Nom"
+    document.getElementById('inscripteurId').value = `${personnel.code} - ${personnel.nom}`;
+    document.getElementById('inscripteurPoste').value = personnel.poste;
+    
+    // DEBUG
+    console.log('Personnel sélectionné:', {
+        code: personnel.code,
+        nom: personnel.nom,
+        poste: personnel.poste
+    });
+}););
             inscripteurList.appendChild(item);
             
             // Pour le filtre
@@ -636,18 +637,75 @@ function submitInscription() {
         return;
     }
     
-    // Récupérer l'inscripteur
-    let inscripteur = null;
-    const inscripteurType = document.querySelector('input[name="inscripteurType"]:checked').value;
+   // Récupérer l'inscripteur
+let inscripteur = null;
+const inscripteurType = document.querySelector('input[name="inscripteurType"]:checked').value;
+
+if (inscripteurType === 'personnel') {
+    const inscripteurText = document.getElementById('inscripteurId').value;
+    const inscripteurPoste = document.getElementById('inscripteurPoste').value;
     
-    if (inscripteurType === 'personnel') {
-        const inscripteurText = document.getElementById('inscripteurId').value;
-        const inscripteurPoste = document.getElementById('inscripteurPoste').value;
-        
-        if (!inscripteurText || !inscripteurPoste) {
-            alert('Veuillez sélectionner un membre du personnel');
-            return;
-        }
+    // DEBUG: Vérifier les valeurs
+    console.log('Inscripteur texte:', inscripteurText);
+    console.log('Inscripteur poste:', inscripteurPoste);
+    
+    if (!inscripteurText || inscripteurText.trim() === '' || !inscripteurPoste || inscripteurPoste.trim() === '') {
+        alert('Veuillez sélectionner un membre du personnel en cliquant sur son nom dans la liste');
+        return;
+    }
+    
+    // Extraire le code du personnel (format différent selon la sélection)
+    let codeMatch;
+    
+    // Essayer plusieurs formats
+    if (inscripteurText.includes(' - ')) {
+        // Format: "CODE - Nom"
+        codeMatch = inscripteurText.split(' - ')[0];
+    } else if (inscripteurText.includes('(')) {
+        // Format: "Nom (CODE)"
+        codeMatch = inscripteurText.match(/\(([A-Z]{3}\d+)\)/);
+        codeMatch = codeMatch ? codeMatch[1] : null;
+    } else {
+        // Peut-être juste le code
+        codeMatch = inscripteurText.trim();
+    }
+    
+    console.log('Code extrait:', codeMatch);
+    
+    if (!codeMatch) {
+        alert('Format d\'identifiant d\'inscripteur invalide. Veuillez sélectionner à nouveau.');
+        return;
+    }
+    
+    // Chercher le personnel par code
+    const personnel = personnels.find(p => p.code === codeMatch);
+    console.log('Personnel trouvé:', personnel);
+    
+    if (!personnel) {
+        alert('Membre du personnel non trouvé avec le code: ' + codeMatch);
+        return;
+    }
+    
+    inscripteur = {
+        code: personnel.code,
+        nom: personnel.nom,
+        poste: personnel.poste
+    };
+} else {
+    const externalName = document.getElementById('externalName').value.trim();
+    const externalPoste = "Personne extérieure";
+    
+    if (!externalName) {
+        alert('Veuillez saisir le nom de la personne extérieure');
+        return;
+    }
+    
+    inscripteur = {
+        code: "EXT-" + Date.now().toString().slice(-4),
+        nom: externalName,
+        poste: externalPoste
+    };
+}
         
         // Extraire le code du personnel
         const match = inscripteurText.match(/^([A-Z]{3}\d+) -/);
@@ -1630,4 +1688,5 @@ function saveInscriptions() {
 function savePersonnels() {
     localStorage.setItem('oppe_personnels_2026', JSON.stringify(personnels));
 }
+
 
