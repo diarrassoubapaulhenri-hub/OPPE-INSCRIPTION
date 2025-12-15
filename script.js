@@ -290,8 +290,9 @@ function updatePersonnelStats() {
 
 // ==================== GESTION DU PERSONNEL ====================
 
-// Fonction pour éditer un personnel
 function editPersonnel(id) {
+    console.log('Édition du personnel ID:', id);
+    
     const personnel = personnels.find(p => p.id === id);
     if (!personnel) {
         alert('Membre non trouvé');
@@ -309,8 +310,14 @@ function editPersonnel(id) {
     document.getElementById('editPersonnelStatut').value = personnel.statut;
     document.getElementById('editPersonnelCommentaires').value = personnel.commentaires || '';
     
-    // Afficher le modal
-    document.getElementById('editPersonnelModal').style.display = 'block';
+    // Afficher le modal - FORÇAGE DE L'AFFICHAGE
+    const modal = document.getElementById('editPersonnelModal');
+    modal.style.display = 'block';
+    modal.style.position = 'fixed';
+    modal.style.zIndex = '9999';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    
+    console.log('Modal affiché avec succès');
 }
 
 // Fonction pour confirmer la suppression d'un personnel
@@ -366,6 +373,12 @@ function deletePersonnelById(id) {
     updatePersonnelStats();
     
     // Fermer le modal si ouvert
+    hideEditPersonnelModal();
+    
+    alert('Membre du personnel supprimé avec succès !');
+}
+    
+    // Fermer le modal si ouvert
     if (document.getElementById('editPersonnelModal').style.display === 'block') {
         hideEditPersonnelModal();
     }
@@ -375,9 +388,15 @@ function deletePersonnelById(id) {
 
 // Fermer le modal d'édition
 function hideEditPersonnelModal() {
-    document.getElementById('editPersonnelModal').style.display = 'none';
+    const modal = document.getElementById('editPersonnelModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
     currentEditPersonnelId = null;
     document.getElementById('formEditPersonnel').reset();
+    
+    console.log('Modal fermé');
 }
 
 // Mettre à jour un personnel
@@ -398,9 +417,35 @@ function updatePersonnel() {
     const commentaires = document.getElementById('editPersonnelCommentaires').value.trim();
     
     if (!nom || !code || !poste) {
-        alert('Veuillez remplir tous les champs obligatoires');
+        alert('Veuillez remplir tous les champs obligatoires (Nom, Code, Poste)');
         return;
     }
+    
+    // Vérifier si le code existe déjà pour un autre personnel
+    const autrePersonnel = personnels.find(p => p.code === code && p.id !== id);
+    if (autrePersonnel) {
+        alert('Ce code d\'identification est déjà utilisé par un autre membre');
+        return;
+    }
+    
+    // Mettre à jour le personnel
+    personnels[index] = {
+        ...personnels[index],
+        nom,
+        code,
+        poste,
+        telephone: telephone || null,
+        statut,
+        commentaires: commentaires || null,
+        dateModification: new Date().toISOString()
+    };
+    
+    savePersonnels();
+    loadPersonnels();
+    hideEditPersonnelModal();
+    
+    alert('Membre du personnel mis à jour avec succès !');
+}
     
     // Vérifier si le code existe déjà pour un autre personnel
     const autrePersonnel = personnels.find(p => p.code === code && p.id !== id);
@@ -1585,3 +1630,4 @@ function saveInscriptions() {
 function savePersonnels() {
     localStorage.setItem('oppe_personnels_2026', JSON.stringify(personnels));
 }
+
