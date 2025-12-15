@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscriptions - OPPE 2026</title>
     
-    <!-- Meta tags pour éviter les problèmes de tracking -->
+    <!-- Meta tags pour la sécurité et compatibilité -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     
-    <!-- Styles et polices -->
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     
     <!-- Librairies externes -->
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Vérification d'authentification -->
     <script>
+        // Vérifier l'authentification
         if (localStorage.getItem('isAuthenticated') !== 'true') {
             window.location.href = 'login.html';
         }
         
+        // Gestion du timeout de session (30 minutes)
         let logoutTimer;
         function resetLogoutTimer() {
             clearTimeout(logoutTimer);
@@ -32,13 +33,15 @@
                 localStorage.removeItem('isAuthenticated');
                 alert('Session expirée pour raison de sécurité.');
                 window.location.href = 'login.html';
-            }, 30 * 60 * 1000);
+            }, 30 * 60 * 1000); // 30 minutes
         }
         
+        // Réinitialiser le timer sur les interactions utilisateur
         ['click', 'keypress', 'mousemove', 'scroll'].forEach(event => {
             document.addEventListener(event, resetLogoutTimer);
         });
         
+        // Démarrer le timer
         resetLogoutTimer();
     </script>
 
@@ -64,7 +67,7 @@
             </div>
         </header>
 
-        <!-- Navigation -->
+        <!-- Navigation par onglets -->
         <nav class="nav-tabs">
             <button class="tab-btn active" data-tab="inscription">
                 <i class="fas fa-user-plus"></i> Nouvelle Inscription
@@ -86,7 +89,7 @@
             </button>
         </nav>
 
-        <!-- Nouvelle Inscription -->
+        <!-- Section Nouvelle Inscription -->
         <section id="inscription" class="tab-content active">
             <div class="section-header">
                 <h2><i class="fas fa-user-plus"></i> Formulaire d'Inscription OPPE 2026</h2>
@@ -95,11 +98,13 @@
             
             <form id="formInscription">
                 <div class="form-grid">
+                    <!-- Nom de l'enfant -->
                     <div class="form-group">
                         <label for="nom"><i class="fas fa-child"></i> Nom Complet de l'enfant *</label>
                         <input type="text" id="nom" name="nom" required placeholder="Nom et prénom de l'enfant">
                     </div>
                     
+                    <!-- Sexe -->
                     <div class="form-group">
                         <label><i class="fas fa-venus-mars"></i> Sexe de l'enfant *</label>
                         <div class="radio-group">
@@ -118,6 +123,7 @@
                         </div>
                     </div>
                     
+                    <!-- Âge -->
                     <div class="form-group">
                         <label for="age"><i class="fas fa-birthday-cake"></i> Âge de l'enfant *</label>
                         <input type="number" id="age" name="age" min="3" max="14" required placeholder="Âge (3 à 14 ans)">
@@ -126,16 +132,19 @@
                         </div>
                     </div>
                     
+                    <!-- Téléphone -->
                     <div class="form-group">
                         <label for="telephone"><i class="fas fa-phone"></i> Téléphone du parent *</label>
                         <input type="tel" id="telephone" name="telephone" required placeholder="06 12 34 56 78">
                     </div>
                     
+                    <!-- Nom du parent -->
                     <div class="form-group">
                         <label for="parent"><i class="fas fa-user-friends"></i> Nom du parent *</label>
                         <input type="text" id="parent" name="parent" required placeholder="Nom du parent/tuteur">
                     </div>
                     
+                    <!-- Taille T-shirt -->
                     <div class="form-group">
                         <label for="taille"><i class="fas fa-tshirt"></i> Taille du T-shirt *</label>
                         <select id="taille" name="taille" required>
@@ -150,12 +159,13 @@
                     </div>
                 </div>
                 
-                <!-- Personne qui inscrit -->
+                <!-- Section Personne qui inscrit -->
                 <div class="inscripteur-section">
                     <h3><i class="fas fa-user-tie"></i> Personne qui inscrit l'enfant *</h3>
-                    <p class="instruction">Cliquez sur un nom dans la liste pour le sélectionner</p>
+                    <p class="instruction"><i class="fas fa-info-circle"></i> Cliquez sur un nom dans la liste pour le sélectionner</p>
                     
                     <div class="inscripteur-options">
+                        <!-- Recherche de personnel -->
                         <div class="inscripteur-search">
                             <input type="text" id="searchInscripteur" placeholder="Rechercher un membre du personnel...">
                             <button type="button" id="btnSearchInscripteur" class="btn-small">
@@ -163,39 +173,43 @@
                             </button>
                         </div>
                         
+                        <!-- Liste des personnels -->
                         <div class="inscripteur-list" id="inscripteurList">
                             <!-- Liste générée dynamiquement -->
                         </div>
                         
+                        <!-- Options inscripteur -->
                         <div class="inscripteur-custom">
                             <label>
                                 <input type="radio" name="inscripteurType" value="personnel" checked>
-                                Membre du personnel (sélectionnez ci-dessus)
+                                <span>Membre du personnel (sélectionnez ci-dessus)</span>
                             </label>
                             <label>
                                 <input type="radio" name="inscripteurType" value="externe">
-                                Personne extérieure (saisir nom)
+                                <span>Personne extérieure (saisir nom)</span>
                             </label>
                         </div>
                         
+                        <!-- Personne extérieure -->
                         <div id="externalInscripteur" class="form-group" style="display: none;">
-                            <label for="externalName"><i class="fas fa-user"></i> Nom de la personne extérieure</label>
+                            <label for="externalName"><i class="fas fa-user"></i> Nom de la personne extérieure *</label>
                             <input type="text" id="externalName" name="externalName" placeholder="Nom et prénom">
                         </div>
                         
+                        <!-- Champs remplis automatiquement -->
                         <div class="form-group">
                             <label for="inscripteurId"><i class="fas fa-id-badge"></i> Identifiant de l'inscripteur *</label>
-                            <input type="text" id="inscripteurId" name="inscripteurId" required readonly placeholder="Sélectionnez ou saisissez l'inscripteur">
+                            <input type="text" id="inscripteurId" name="inscripteurId" required readonly placeholder="Cliquez sur un membre du personnel">
                         </div>
                         
                         <div class="form-group">
-                            <label for="inscripteurPoste"><i class="fas fa-briefcase"></i> Poste/Fonction</label>
+                            <label for="inscripteurPoste"><i class="fas fa-briefcase"></i> Poste/Fonction *</label>
                             <input type="text" id="inscripteurPoste" name="inscripteurPoste" readonly placeholder="Poste de l'inscripteur">
                         </div>
                     </div>
                 </div>
                 
-                <!-- Contribution Financière -->
+                <!-- Section Contribution financière -->
                 <div class="payment-section">
                     <h3><i class="fas fa-money-bill-wave"></i> Contribution Financière (F CFA)</h3>
                     <div class="payment-options">
@@ -240,24 +254,27 @@
                         </label>
                     </div>
                     
+                    <!-- Montant libre -->
                     <div id="montantLibre" class="form-group" style="display: none;">
-                        <label for="montantAutre"><i class="fas fa-money-bill"></i> Montant (F CFA)</label>
+                        <label for="montantAutre"><i class="fas fa-money-bill"></i> Montant (F CFA) *</label>
                         <input type="number" id="montantAutre" name="montantAutre" min="500" step="100" placeholder="Autre montant en F CFA">
                     </div>
                 </div>
                 
+                <!-- Commentaires -->
                 <div class="form-group">
                     <label for="commentaires"><i class="fas fa-comment-dots"></i> Informations médicales / Allergies</label>
                     <textarea id="commentaires" name="commentaires" rows="3" placeholder="Allergies, médicaments, informations importantes..."></textarea>
                 </div>
                 
+                <!-- Bouton de soumission -->
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-paper-plane"></i> Enregistrer l'inscription
                 </button>
             </form>
         </section>
 
-        <!-- Liste des Inscrits -->
+        <!-- Section Liste des Inscrits -->
         <section id="liste" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-users"></i> Liste des Enfants Inscrits OPPE 2026</h2>
@@ -290,11 +307,12 @@
                         </tr>
                     </thead>
                     <tbody id="listeBody">
-                        <!-- Inscriptions générées dynamiquement -->
+                        <!-- Les inscriptions seront ajoutées ici par JavaScript -->
                     </tbody>
                 </table>
             </div>
             
+            <!-- Résumé statistique -->
             <div class="summary">
                 <div class="summary-card">
                     <h3><i class="fas fa-child"></i> Total Enfants</h3>
@@ -315,7 +333,7 @@
             </div>
         </section>
 
-        <!-- Modification/Validation -->
+        <!-- Section Modification/Validation -->
         <section id="modification" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-user-edit"></i> Gestion des Inscriptions OPPE</h2>
@@ -323,6 +341,7 @@
             </div>
             
             <div class="admin-section">
+                <!-- Recherche d'inscription -->
                 <div class="search-modify">
                     <h3><i class="fas fa-search"></i> Rechercher un inscrit</h3>
                     <div class="search-box">
@@ -333,6 +352,7 @@
                     </div>
                 </div>
                 
+                <!-- Formulaire de modification (caché par défaut) -->
                 <div id="editFormContainer" class="edit-form-container" style="display: none;">
                     <h3><i class="fas fa-edit"></i> Modifier l'inscription</h3>
                     <form id="formModification">
@@ -340,36 +360,36 @@
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="editNom">Nom de l'enfant</label>
-                                <input type="text" id="editNom" name="editNom">
+                                <label for="editNom">Nom de l'enfant *</label>
+                                <input type="text" id="editNom" name="editNom" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editSexe">Sexe</label>
-                                <select id="editSexe" name="editSexe">
+                                <label for="editSexe">Sexe *</label>
+                                <select id="editSexe" name="editSexe" required>
                                     <option value="Garçon">Garçon</option>
                                     <option value="Fille">Fille</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editAge">Âge (3-14 ans)</label>
-                                <input type="number" id="editAge" name="editAge" min="3" max="14">
+                                <label for="editAge">Âge (3-14 ans) *</label>
+                                <input type="number" id="editAge" name="editAge" min="3" max="14" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editTelephone">Téléphone parent</label>
-                                <input type="tel" id="editTelephone" name="editTelephone">
+                                <label for="editTelephone">Téléphone parent *</label>
+                                <input type="tel" id="editTelephone" name="editTelephone" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editParent">Nom du parent</label>
-                                <input type="text" id="editParent" name="editParent">
+                                <label for="editParent">Nom du parent *</label>
+                                <input type="text" id="editParent" name="editParent" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editTaille">Taille T-shirt</label>
-                                <select id="editTaille" name="editTaille">
+                                <label for="editTaille">Taille T-shirt *</label>
+                                <select id="editTaille" name="editTaille" required>
                                     <option value="">Choisir taille</option>
                                     <option value="3-4 ans">3-4 ans</option>
                                     <option value="5-6 ans">5-6 ans</option>
@@ -381,19 +401,19 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="editInscripteur">Inscrit par</label>
-                                <input type="text" id="editInscripteur" name="editInscripteur">
+                                <label for="editInscripteur">Inscrit par *</label>
+                                <input type="text" id="editInscripteur" name="editInscripteur" required readonly>
                             </div>
                             
                             <div class="form-group">
-                                <label for="editInscripteurPoste">Poste inscripteur</label>
-                                <input type="text" id="editInscripteurPoste" name="editInscripteurPoste">
+                                <label for="editInscripteurPoste">Poste inscripteur *</label>
+                                <input type="text" id="editInscripteurPoste" name="editInscripteurPoste" required readonly>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="editMontant">Montant (F CFA)</label>
-                            <input type="number" id="editMontant" name="editMontant" step="100">
+                            <label for="editMontant">Montant (F CFA) *</label>
+                            <input type="number" id="editMontant" name="editMontant" step="100" required>
                         </div>
                         
                         <div class="form-group">
@@ -401,7 +421,7 @@
                             <textarea id="editCommentaires" name="editCommentaires" rows="2"></textarea>
                         </div>
                         
-                        <!-- T-shirt -->
+                        <!-- Distribution du T-shirt -->
                         <div class="tshirt-section">
                             <h4><i class="fas fa-tshirt"></i> Distribution du T-shirt</h4>
                             <div class="tshirt-status">
@@ -427,6 +447,7 @@
                             </div>
                         </div>
                         
+                        <!-- Boutons d'action -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Enregistrer
@@ -443,7 +464,7 @@
             </div>
         </section>
 
-        <!-- Statistiques -->
+        <!-- Section Statistiques -->
         <section id="statistiques" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-chart-pie"></i> Statistiques OPPE 2026</h2>
@@ -485,7 +506,7 @@
             </div>
         </section>
 
-        <!-- Personnels -->
+        <!-- Section Gestion des Personnels -->
         <section id="inscripteurs" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-user-tie"></i> Gestion des Membres du Personnel</h2>
@@ -493,6 +514,7 @@
             </div>
             
             <div class="personnel-section">
+                <!-- Formulaire d'ajout -->
                 <div class="personnel-form">
                     <h3><i class="fas fa-user-plus"></i> Ajouter un membre du personnel</h3>
                     <form id="formPersonnel">
@@ -537,6 +559,7 @@
                     </form>
                 </div>
                 
+                <!-- Liste des personnels -->
                 <div class="personnel-list-section">
                     <h3><i class="fas fa-list"></i> Liste des Membres du Personnel</h3>
                     <div class="controls">
@@ -562,6 +585,7 @@
                         </table>
                     </div>
                     
+                    <!-- Résumé des personnels -->
                     <div class="personnel-summary">
                         <div class="summary-card">
                             <h3><i class="fas fa-users"></i> Total Membres</h3>
@@ -584,7 +608,7 @@
             </div>
         </section>
 
-        <!-- Base de données -->
+        <!-- Section Base de données -->
         <section id="export" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-database"></i> Gestion de la Base de Données</h2>
@@ -592,6 +616,7 @@
             </div>
             
             <div class="database-section">
+                <!-- Export Excel -->
                 <div class="database-card">
                     <h3><i class="fas fa-file-excel"></i> Export Excel</h3>
                     <p>Exportez toutes les inscriptions dans un fichier Excel.</p>
@@ -605,6 +630,7 @@
                     </div>
                 </div>
                 
+                <!-- Sauvegarde -->
                 <div class="database-card">
                     <h3><i class="fas fa-save"></i> Sauvegarde des Données</h3>
                     <p>Sauvegardez manuellement les données.</p>
@@ -619,6 +645,7 @@
                     <input type="file" id="restoreFile" accept=".json" style="display: none;">
                 </div>
                 
+                <!-- Rapports -->
                 <div class="database-card">
                     <h3><i class="fas fa-chart-line"></i> Rapports Complets</h3>
                     <p>Générez des rapports détaillés avec analyse statistique.</p>
@@ -632,6 +659,7 @@
                     </div>
                 </div>
                 
+                <!-- Maintenance -->
                 <div class="database-card">
                     <h3><i class="fas fa-cogs"></i> Maintenance</h3>
                     <p>Options avancées de gestion de la base de données.</p>
@@ -646,6 +674,7 @@
                 </div>
             </div>
             
+            <!-- Informations sur la base de données -->
             <div class="database-info">
                 <h4><i class="fas fa-info-circle"></i> Informations sur les données</h4>
                 <div class="info-grid">
@@ -665,7 +694,7 @@
             </div>
         </section>
 
-        <!-- Footer -->
+        <!-- Pied de page -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-section">
@@ -689,9 +718,9 @@
         </footer>
     </div>
 
-    <!-- Modals -->
+    <!-- ==================== MODALS ==================== -->
 
-    <!-- Modal confirmation -->
+    <!-- Modal de confirmation d'inscription -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -716,7 +745,7 @@
         </div>
     </div>
 
-    <!-- Modal mot de passe -->
+    <!-- Modal de changement de mot de passe -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -748,55 +777,55 @@
         </div>
     </div>
 
-    <!-- Modal éditer personnel - VERSION SIMPLIFIÉE -->
-    <div id="editPersonnelModal" class="modal-personnel" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
-        <div style="background: white; margin: 50px auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 10px; position: relative;">
-            <button class="close-modal-btn" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+    <!-- Modal d'édition du personnel (version simplifiée) -->
+    <div id="editPersonnelModal" class="modal-personnel" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: white; margin: 10% auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 10px; position: relative;">
+            <button class="close-modal-btn" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
             
-            <h2 style="color: #1e3c72; margin-bottom: 20px;"><i class="fas fa-user-edit"></i> Modifier le membre</h2>
+            <h2 style="color: #1e3c72; margin-bottom: 25px;"><i class="fas fa-user-edit"></i> Modifier le membre du personnel</h2>
             
             <form id="formEditPersonnel">
                 <input type="hidden" id="editPersonnelId">
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Nom complet *</label>
-                    <input type="text" id="editPersonnelNom" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">Nom complet *</label>
+                    <input type="text" id="editPersonnelNom" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Code *</label>
-                    <input type="text" id="editPersonnelCode" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">Code d'identification *</label>
+                    <input type="text" id="editPersonnelCode" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Poste *</label>
-                    <input type="text" id="editPersonnelPoste" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">Poste/Fonction *</label>
+                    <input type="text" id="editPersonnelPoste" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px;">Téléphone</label>
-                    <input type="tel" id="editPersonnelTelephone" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">Téléphone</label>
+                    <input type="tel" id="editPersonnelTelephone" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px;">Statut</label>
-                    <select id="editPersonnelStatut" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">Statut</label>
+                    <select id="editPersonnelStatut" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                         <option value="actif">Actif</option>
                         <option value="inactif">Inactif</option>
                     </select>
                 </div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 30px;">
-                    <button type="submit" style="flex: 1; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="submit" style="flex: 1; padding: 14px; background: linear-gradient(to right, #1e3c72, #2a5298); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer;">
                         <i class="fas fa-save"></i> Confirmer
                     </button>
-                    <button type="button" id="cancelEditPersonnelBtn" style="flex: 1; padding: 12px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                    <button type="button" id="cancelEditPersonnelBtn" style="flex: 1; padding: 14px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer;">
                         <i class="fas fa-times"></i> Annuler
                     </button>
                 </div>
                 
-                <div style="margin-top: 15px;">
-                    <button type="button" id="deletePersonnelModalBtn" style="width: 100%; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                <div style="margin-top: 20px;">
+                    <button type="button" id="deletePersonnelModalBtn" style="width: 100%; padding: 14px; background: #dc3545; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Supprimer ce membre
                     </button>
                 </div>
@@ -805,6 +834,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
