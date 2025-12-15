@@ -974,4 +974,69 @@ tr:hover {
     .summary {
         grid-template-columns: 1fr;
     }
+
+}
+/* Styles spécifiques pour le modal d'édition du personnel */
+#editPersonnelModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#editPersonnelModal .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1e3c72;
+}
+
+.modal-header .close-edit-personnel {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-header .close-edit-personnel:hover {
+    color: #000;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+/* Override pour le modal personnel - TRÈS IMPORTANT ! */
+#editPersonnelModal.modal {
+    display: none !important; /* Caché par défaut */
+}
+
+#editPersonnelModal.modal[style*="display: block"] {
+    display: block !important; /* Forcé quand JavaScript l'affiche */
 }
